@@ -2,10 +2,16 @@ package com.example.cr.matrixmincost;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.widget.Toast;
 
-public class MainActivity extends AppCompatActivity {
+import java.util.ArrayList;
+import java.util.List;
+
+public class MainActivity extends AppCompatActivity
+{
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -14,34 +20,38 @@ public class MainActivity extends AppCompatActivity {
         findMinCost(matrix);
     }
 
-    private int findMinCost(int[][] matrix)
+    public void findMinCost(int[][] matrix)
     {
         int a = matrix.length;
         int b = matrix[0].length;
 
-        int[][] minCost = new int[a+1][b];
-        minCost[0][0] = matrix[0][0];
+        List<Integer> result = new ArrayList<>();
+        result.add(1);
+        int j=1;
 
-        //intialize the top row
-        for (int i = 1; i < b; i++) {
-            minCost[0][i] = minCost[0][i - 1] + matrix[0][i];
-        }
-
-        //intilaize the left column
-        for (int j = 1; j < a; j++) {
-            minCost[j][0] = minCost[j - 1][0] + minCost[j][0];
-        }
-
-        //fill up the matrix
-        for (int i = 1; i < a; i++) {
-            for (int j = 1; j < b; j++) {
-                if (minCost[i - 1][j] > minCost[i][j - 1]) {
-                    minCost[i][j] = minCost[i][j - 1] + minCost[i][j];
-                } else {
-                    minCost[i][j] = minCost[i - 1][j] + minCost[i][j];
+        for(int i=1;i<a-1;i++,j++)
+        {
+            while(j<b )
+            {
+                if (matrix[i+1][j+1] < matrix[i][j+1] && matrix[i+1][j+1] < matrix[i+1][j])   //  verify  a[2][2] with  a[1][2] , a[2][1]
+                {
+                    result.add(j+1);
+                    //j=j+1;
+                    break;
+                }
+                else if(matrix[i][j+1] < matrix[i+1][j+1] && matrix[i][j+1] <  matrix[i+1][j])//   verify a[1][2]  <   a[2][2]   a[2][1]
+                {
+                    result.add(j);
+                    i++;
+                    break;
+                }
+                else if(matrix[i+1][j] < matrix[i+1][j+1] && matrix[i+1][j] <  matrix[i][j+1]) //   verify  a[2][1]  <    a[2][2]   a[1][2]
+                {
+                    result.add(j);
+                    break;
                 }
             }
         }
-        return minCost[a-1][b-1];
+        Toast.makeText(MainActivity.this,"the values are" + result,Toast.LENGTH_LONG).show();
     }
 }
